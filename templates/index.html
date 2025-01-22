@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Analyzer</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .project-info {
+            background-color: #e8f4f8;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="file"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .file-drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .file-drop-area.dragover {
+            background-color: #e8f4f8;
+            border-color: var(--primary-color);
+        }
+        .features {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .features li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .features li::before {
+            content: '✓';
+            color: var(--secondary-color);
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Circuit Analyzer</h1>
+            <div class="project-info">
+                <h2>About This Project</h2>
+                <p>The Circuit Analyzer is an AI-powered tool designed to help electrical engineering students and professionals analyze circuit diagrams quickly and accurately. Simply upload your circuit diagram to receive detailed analysis and solutions.</p>
+            </div>
+            <form id="circuit-form" method="POST" action="/" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file-upload">Upload Circuit Diagram</label>
+                    <div id="file-drop-area" class="file-drop-area" onclick="document.getElementById('file-upload').click();">
+                        <p>Drag and drop your file here, or click to select a file</p>
+                        <input type="file" id="file-upload" name="file" accept=".png,.jpg,.jpeg,.gif" style="display: none;" required>
+                    </div>
+                    <p id="file-name"></p>
+                </div>
+                <button type="submit" class="btn">Upload and Analyze</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <script>
+        const fileDropArea = document.getElementById('file-drop-area');
+        const fileUpload = document.getElementById('file-upload');
+        const fileName = document.getElementById('file-name');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Highlight the drop area when a file is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, highlight, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileDropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            fileDropArea.classList.add('dragover');
+        }
+
+        function unhighlight() {
+            fileDropArea.classList.remove('dragover');
+        }
+
+        // Handle dropped files
+        fileDropArea.addEventListener('drop', handleDrop, false);
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        // Handle file selection
+        fileUpload.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                fileName.textContent = `Selected file: ${files[0].name}`;
+            }
+        }
+    </script>
+</body>
+</html>
